@@ -1,0 +1,1575 @@
+--- START OF FILE Paste February 04, 2026 - 11:57PM ---
+
+<!-- START OF FILE Paste January 16, 2026 - Updated with Language Selection -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>1WIN SIGNALS FINAL V9</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg-dark: #0f192b;
+        --panel-bg: #1c283d;
+        --blue-1win: #0099ff;
+        --pink-1win: #f53b7b;
+        --text-white: #ffffff;
+        --text-gray: #8e9aab;
+        --radius: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+    ::-webkit-scrollbar { display: none; }
+    body { -ms-overflow-style: none; scrollbar-width: none; background-color: var(--bg-dark); font-family: 'Montserrat', sans-serif; color: var(--text-white); height: 100vh; overflow: hidden; display: flex; flex-direction: column; align-items: center; position: relative; }
+
+    /* ФОН */
+    .bg-logos {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50' viewBox='0 0 100 50'%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-weight='900' font-style='italic' font-size='20' fill='rgba(255,255,255,0.03)' text-anchor='middle' dominant-baseline='middle'%3E1WIN%3C/text%3E%3C/svg%3E");
+        background-size: 100px 50px; background-repeat: repeat;
+    }
+
+    /* HEADER */
+    .header {
+        width: 100%; max-width: 500px; padding: 15px 20px; display: flex; justify-content: center; align-items: center;
+        z-index: 10; background: rgba(15, 25, 43, 0.95); backdrop-filter: blur(10px); flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .logo { font-weight: 900; font-style: italic; font-size: 24px; letter-spacing: -1px; }
+    .logo span { color: var(--blue-1win); }
+
+    /* SCREENS */
+    .screens-container { width: 100%; flex: 1; overflow-y: auto; padding-bottom: 100px; display: flex; flex-direction: column; align-items: center; }
+    .screen { width: 100%; max-width: 500px; padding: 0 20px; display: none; animation: fadeUp 0.3s ease-out; }
+    .screen.active { display: block; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* SCREEN LANGUAGE */
+    #screen-language {
+        display: none; /* Скрыто по умолчанию, показывается JS */
+        z-index: 5000;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg-dark);
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 20px;
+    }
+    .lang-btn {
+        width: 100%; max-width: 300px;
+        background: var(--panel-bg);
+        border: 2px solid rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 20px;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        cursor: pointer;
+        transition: 0.2s;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+    .lang-btn:active { transform: scale(0.98); border-color: var(--blue-1win); }
+    .lang-flag { font-size: 32px; }
+    .lang-name { font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* ВВОД ID */
+    .id-section {
+        background: rgba(15, 25, 43, 0.8);
+        border: 1px solid var(--blue-1win);
+        border-radius: 15px;
+        padding: 15px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+    .id-label {
+        font-size: 12px; color: var(--blue-1win); font-weight: 800; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .id-input {
+        width: 100%; padding: 14px;
+        background: rgba(0,0,0,0.3);
+        border: 2px solid #333;
+        border-radius: 12px;
+        color: white; font-size: 20px; font-family: monospace; text-align: center;
+        outline: none; transition: 0.3s;
+    }
+    .id-input:focus { border-color: var(--blue-1win); box-shadow: 0 0 10px rgba(0, 153, 255, 0.2); }
+    .id-input.error { border-color: var(--pink-1win); animation: shake 0.3s; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+    /* КНОПКА СМЕНЫ ID */
+    .change-id-btn {
+        background: transparent; border: 1px solid var(--text-gray); color: var(--text-gray);
+        font-size: 10px; padding: 4px 8px; border-radius: 6px; margin-left: 10px;
+        cursor: pointer; font-family: 'Montserrat', sans-serif; text-transform: uppercase;
+    }
+    .change-id-btn:active { background: rgba(255,255,255,0.1); }
+
+    /* --- МОДАЛЬНОЕ ОКНО ОБЩЕЕ --- */
+    .modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.95); z-index: 9999;
+        display: none; align-items: center; justify-content: center;
+        backdrop-filter: blur(10px);
+        animation: fadeIn 0.2s;
+        overflow-y: auto;
+        padding: 20px 0;
+    }
+    .modal-box {
+        width: 90%; max-width: 340px;
+        background: #1c283d;
+        border: 2px solid var(--blue-1win);
+        border-radius: 20px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 0 50px rgba(0, 153, 255, 0.3);
+        animation: popIn 0.2s forwards;
+        margin: auto;
+    }
+    .modal-title { font-size: 22px; font-weight: 900; color: white; margin-bottom: 10px; font-style: italic; }
+    .modal-desc { font-size: 14px; color: #ccc; margin-bottom: 25px; line-height: 1.5; font-weight: 600; }
+    
+    .warning-big {
+        color: var(--pink-1win);
+        font-size: 26px;
+        font-weight: 900;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        line-height: 1.1;
+        text-shadow: 0 0 20px rgba(245, 59, 123, 0.5);
+    }
+    
+    /* СТИЛИ СПОЙЛЕРА И ТЕКСТА ИНСТРУКЦИИ */
+    .spoiler-box {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        text-align: left;
+    }
+    
+    .instruction-text-style {
+        font-size: 12px;
+        color: #e0e6ed;
+        line-height: 1.6;
+        font-weight: 600;
+    }
+    .instruction-text-style strong {
+        color: white;
+        font-weight: 800;
+    }
+    
+    .spoiler-content {
+        max-height: 80px; 
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+        position: relative;
+        text-align: center;
+    }
+    .spoiler-content p, .spoiler-content div {
+        text-align: left;
+    }
+    
+    .instruction-header {
+        color: var(--pink-1win);
+        font-weight: 900;
+        font-size: 15px;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: center;
+        display: block;
+        text-shadow: 0 0 10px rgba(245, 59, 123, 0.4);
+        border-bottom: 1px dashed rgba(245, 59, 123, 0.3);
+        padding-bottom: 10px;
+    }
+
+    .spoiler-content.expanded {
+        max-height: 1500px;
+    }
+    .spoiler-content::after {
+        content: '';
+        position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
+        background: linear-gradient(to bottom, transparent, #161f30);
+        pointer-events: none;
+        transition: opacity 0.3s;
+    }
+    .spoiler-content.expanded::after {
+        opacity: 0;
+    }
+    
+    .spoiler-btn {
+        width: 100%;
+        background: rgba(255,255,255,0.05);
+        border: 2px solid rgba(255,255,255,0.1);
+        color: var(--blue-1win);
+        font-size: 13px;
+        font-weight: 900; 
+        padding: 12px;
+        border-radius: 10px;
+        margin-top: 10px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.3s;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .spoiler-btn:hover { 
+        background: rgba(0, 153, 255, 0.1); 
+        border-color: var(--blue-1win);
+    }
+    
+    .warning-desc {
+        font-size: 13px;
+        color: white;
+        margin-bottom: 15px;
+        line-height: 1.4;
+        font-weight: 600;
+    }
+    
+    /* ГАЛОЧКА (CHECKBOX) */
+    .checkbox-container {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        background: rgba(0,0,0,0.3);
+        padding: 12px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        border: 1px solid rgba(255,255,255,0.1);
+        text-align: left;
+    }
+    .checkbox-container.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    .custom-checkbox {
+        width: 22px;
+        height: 22px;
+        min-width: 22px;
+        accent-color: var(--blue-1win);
+        cursor: pointer;
+        margin-top: 0px;
+    }
+    .checkbox-label {
+        font-size: 12px;
+        color: var(--text-white);
+        font-weight: 700;
+        cursor: pointer;
+        line-height: 1.4;
+    }
+
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-btn {
+        flex: 1; padding: 14px; border-radius: 12px; border: none;
+        font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase;
+        transition: 0.3s; letter-spacing: 0.5px;
+    }
+    .btn-cancel { background: #2c3e50; color: #fff; }
+    .btn-confirm { background: linear-gradient(90deg, #f53b7b, #d6306d); color: white; box-shadow: 0 5px 15px rgba(245, 59, 123, 0.4); }
+    
+    .btn-start-disabled {
+        background: #444; color: #888; cursor: not-allowed; box-shadow: none;
+    }
+    .btn-start-active {
+        background: linear-gradient(90deg, #0099ff, #0066cc); color: white;
+        box-shadow: 0 0 20px rgba(0, 153, 255, 0.4);
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    /* CARDS */
+    .games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+    .game-card {
+        background: var(--panel-bg); border-radius: var(--radius); padding: 15px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        height: 130px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer;
+        transition: transform 0.1s, border-color 0.2s; position: relative; overflow: hidden;
+    }
+    .game-card:active { transform: scale(0.96); background: rgba(255,255,255,0.05); }
+    .game-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: var(--radius);
+        opacity: 0.7;
+    }
+    .g-title {
+        font-weight: 800;
+        font-size: 11px;
+        text-transform: uppercase;
+        z-index: 2;
+        text-align: center;
+        background: rgba(15, 25, 43, 0.8);
+        padding: 4px 8px;
+        border-radius: 6px;
+        margin-top: auto;
+        backdrop-filter: blur(5px);
+    }
+
+    /* СТИЛИ ДЛЯ ПРЕДУПРЕЖДЕНИЯ В МЕНЮ */
+    .home-warning {
+        background: rgba(245, 59, 123, 0.15);
+        border: 2px solid var(--pink-1win);
+        border-radius: 15px;
+        padding: 15px;
+        margin-top: 25px;
+        margin-bottom: 10px;
+        text-align: center;
+        color: white;
+        font-weight: 800;
+        font-size: 13px;
+        line-height: 1.5;
+        text-transform: uppercase;
+        box-shadow: 0 5px 20px rgba(245, 59, 123, 0.2);
+    }
+    .copy-span {
+        color: var(--pink-1win);
+        text-decoration: underline;
+        cursor: pointer;
+        padding: 0 3px;
+        text-transform: none;
+        display: inline-block;
+    }
+    .copy-span:active {
+        background: var(--pink-1win);
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    /* TOAST NOTIFICATION */
+    .toast {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #10b981; /* Зеленый цвет */
+        color: white;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 800;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s, transform 0.3s;
+        z-index: 2000;
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-align: center;
+        width: 90%;
+        max-width: 350px;
+        line-height: 1.4;
+    }
+    .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-5px);
+    }
+
+    /* GAME UI */
+    .game-ui { background: var(--panel-bg); border-radius: 25px; padding: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    
+    .main-btn {
+        background: linear-gradient(90deg, #0099ff, #0066cc); color: white; border: none;
+        width: 100%; padding: 16px; border-radius: 15px; font-weight: 900; font-size: 16px;
+        text-transform: uppercase; margin-top: 10px; cursor: pointer;
+        box-shadow: 0 5px 20px rgba(0, 153, 255, 0.4); transition: 0.2s; letter-spacing: 0.5px;
+    }
+    .main-btn:disabled { display: none; }
+    .main-btn:active:not(:disabled) { transform: scale(0.98); opacity: 0.9; }
+
+    /* LOADER */
+    .loader-container { display: none; justify-content: center; align-items: center; margin-top: 20px; height: 50px; }
+    .spinner { width: 30px; height: 30px; border: 3px solid rgba(255, 255, 255, 0.1); border-left-color: var(--blue-1win); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .status-text { text-align: center; font-size: 12px; color: var(--text-gray); margin-top: 15px; height: 20px; font-family: monospace; font-weight: 600; }
+
+    /* MINES */
+    .mines-options { display: flex; gap: 5px; margin-bottom: 15px; background: #0f192b; padding: 5px; border-radius: 12px; }
+    .mine-btn { flex: 1; background: transparent; border: none; color: var(--text-gray); padding: 8px; font-weight: 800; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 14px; }
+    .mine-btn.active { background: var(--blue-1win); color: white; }
+    .mines-wrapper { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; background: #0b1221; padding: 8px; border-radius: 15px; }
+    .mine-cell { aspect-ratio: 1; background: #152033; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+    .mine-cell.safe { background: linear-gradient(135deg, #1c283d, #1c283d); border: 2px solid #f59e0b; box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+    .star-icon { font-size: 20px; animation: popStar 0.4s; }
+
+    /* TOWER RUSH */
+    .tower-wrapper {
+        height: 420px;
+        background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+        border: 2px solid #333; border-radius: 15px; position: relative; overflow: hidden;
+        display: flex; flex-direction: column-reverse; align-items: center; padding-bottom: 0px;
+    }
+    .tower-ground { width: 100%; height: 10px; background: #1a1a1a; border-top: 2px solid #444; z-index: 10; flex-shrink: 0; }
+    .tower-floor { width: 140px; height: 70px; position: relative; z-index: 1; animation: dropFloor 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+    .windows { position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .win { background: #444; border-radius: 2px; width: 100%; height: 100%; }
+    .win.lit { background: #f1c40f; box-shadow: 0 0 8px #f1c40f; }
+    .style-concrete { background: #7f8c8d; border-left: 5px solid #95a5a6; border-right: 5px solid #34495e; border-top: 2px solid #bdc3c7; }
+    .style-brick { background: #c0392b; border-left: 5px solid #e74c3c; border-right: 5px solid #922b21; border-top: 2px solid #d98880; }
+    .style-tech { background: #2980b9; border-left: 5px solid #3498db; border-right: 5px solid #1a5276; border-top: 2px solid #5dade2; }
+    .tower-roof { width: 150px; height: 35px; background: #2c3e50; border-radius: 10px 10px 0 0; margin-bottom: -5px; z-index: 2; position: relative; animation: dropFloor 0.3s ease-out; }
+    .tower-roof::after { content: ''; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 4px; height: 20px; background: red; border-radius: 2px; }
+    .tower-result { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 56px; font-weight: 900; color: white; text-shadow: 0 0 20px rgba(0,0,0,0.8); z-index: 20; display: none; }
+
+    /* Penalty & Coin */
+    .penalty-wrapper { position: relative; height: 220px; background: linear-gradient(to bottom, #2b5624, #3a7530); border: 3px solid rgba(255,255,255,0.8); border-bottom: none; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+    .net { position: absolute; top: 5px; left: 5px; right: 5px; bottom: 0; border: 1px solid rgba(255,255,255,0.3); border-bottom: none; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 15px), repeating-linear-gradient(-45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 15px); }
+    .penalty-grid { position: absolute; top: 10px; left: 10px; right: 10px; bottom: 0; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(3, 1fr); gap: 4px; }
+    .p-cell { border: 1px dashed rgba(255,255,255,0.1); border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+    .ball { width: 30px; height: 30px; background: white; border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: ballHit 0.5s; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="white"/><path d="M50 2 A48 48 0 0 1 50 98" fill="rgba(0,0,0,0.1)"/><circle cx="50" cy="50" r="40" fill="none" stroke="black" stroke-width="5"/></svg>'); }
+    
+    .coin-scene { height: 200px; perspective: 1000px; display: flex; align-items: center; justify-content: center; }
+    .coin { width: 150px; height: 150px; position: relative; transform-style: preserve-3d; transform: rotateY(0deg); }
+    .side { position: absolute; width: 100%; height: 100%; border-radius: 50%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border: 6px solid #fbbf24; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+    .heads { background: #104e8b; transform: rotateY(0deg); flex-direction: column; }
+    .tails { background: radial-gradient(circle, #fcd34d, #d97706); transform: rotateY(180deg); color: #78350f; font-size: 60px; font-weight: 900; }
+    .coin-text { font-style: italic; font-weight: 900; font-size: 26px; }
+
+    /* INSTRUCTIONS & NAV */
+    .guide-box { background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px; }
+    .code-bg { 
+        background: rgba(245, 59, 123, 0.15); padding: 25px; border-radius: 15px; border: 2px dashed var(--pink-1win); 
+        color: var(--pink-1win); font-family: monospace; font-size: 32px; font-weight: 900; text-align: center; margin: 15px 0; letter-spacing: 3px; text-shadow: 0 0 10px rgba(245, 59, 123, 0.4);
+    }
+    .nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(28, 40, 61, 0.95); backdrop-filter: blur(15px); padding: 10px 20px; border-radius: 30px; display: flex; gap: 20px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100; width: 90%; max-width: 400px; justify-content: space-between; }
+    .nav-item { color: var(--text-gray); font-size: 9px; font-weight: 700; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.3s; flex: 1; }
+    .nav-item svg { width: 22px; height: 22px; margin-bottom: 5px; stroke-width: 2; }
+    .nav-item.active { color: var(--blue-1win); }
+    .nav-item.active svg { stroke: var(--blue-1win); filter: drop-shadow(0 0 5px var(--blue-1win)); }
+
+    /* АДМИН ПАНЕЛЬ СТИЛИ */
+    .admin-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+    .admin-stat-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+    .admin-stat-value { font-size: 24px; font-weight: 900; margin-bottom: 5px; }
+    .admin-stat-label { font-size: 10px; color: var(--text-gray); }
+    
+    .admin-textarea {
+        width: 100%; min-height: 120px; background: rgba(0,0,0,0.3); border: 1px solid #333;
+        border-radius: 10px; padding: 12px; color: white; font-family: 'Montserrat', sans-serif;
+        margin-bottom: 15px; resize: vertical; font-size: 14px;
+    }
+    
+    .admin-users-table {
+        width: 100%; border-collapse: collapse; font-size: 10px;
+        margin-top: 10px;
+    }
+    .admin-users-table th {
+        background: rgba(0,0,0,0.3); padding: 8px; text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        color: var(--blue-1win); font-weight: 700;
+    }
+    .admin-users-table td {
+        padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .user-status-active { color: #10b981; }
+    .user-status-inactive { color: #ef4444; }
+    
+    .admin-image-upload { margin-bottom: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px; }
+    .admin-image-preview { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 2px solid var(--blue-1win); }
+    .admin-image-controls { display: flex; align-items: center; gap: 15px; margin-top: 10px; }
+    .admin-file-input { flex: 1; font-size: 12px; }
+    
+    .export-btn {
+        background: linear-gradient(90deg, #10b981, #059669); color: white; border: none;
+        padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 12px;
+        cursor: pointer; margin-top: 10px; display: inline-flex; align-items: center; gap: 8px;
+    }
+    
+    .search-input {
+        width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid #333;
+        border-radius: 10px; color: white; margin-bottom: 15px; font-size: 14px;
+    }
+
+    @keyframes popStar { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes dropFloor { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes ballHit { 0% { transform: scale(3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+</style>
+</head>
+<body>
+
+<div class="bg-logos"></div>
+
+<!-- 0. ЭКРАН ВЫБОРА ЯЗЫКА (САМЫЙ ПЕРВЫЙ) -->
+<div id="screen-language" style="display: flex;">
+    <div class="logo" style="margin-bottom: 40px; transform: scale(1.5);">1WIN <span>SIGNALS</span></div>
+    
+    <div class="lang-btn" onclick="selectLanguage('ru')">
+        <div class="lang-flag">🇷🇺</div>
+        <div class="lang-name">РУССКИЙ</div>
+    </div>
+    
+    <div class="lang-btn" onclick="selectLanguage('en')">
+        <div class="lang-flag">🇬🇧</div>
+        <div class="lang-name">ENGLISH</div>
+    </div>
+</div>
+
+<div class="header">
+    <div class="logo">1WIN <span>SIGNALS</span></div>
+</div>
+
+<!-- 1. СТАРТОВОЕ ОКНО -->
+<div id="start-warning-modal" class="modal-overlay">
+    <div class="modal-box" style="border-color: var(--pink-1win);">
+        <div class="warning-big" data-t="important">⚠️ ВАЖНО!</div>
+        
+        <!-- ИНСТРУКЦИЯ СО СПОЙЛЕРОМ (ДЛЯ СТАРТА) -->
+        <div style="text-align: left; margin-bottom: 15px;">
+            <div class="spoiler-box">
+                <div id="spoiler-text" class="spoiler-content instruction-text-style">
+                    <!-- Text inserted by JS based on language -->
+                </div>
+                <button id="spoiler-btn" class="spoiler-btn" onclick="toggleSpoiler()" data-t="expand">РАЗВЕРНУТЬ ⬇️</button>
+            </div>
+            
+            <!-- ЧЕКБОКС 1: Ознакомился с инструкцией -->
+            <div class="checkbox-container disabled" id="instruct-check-container">
+                <input type="checkbox" id="instruct-check" class="custom-checkbox" onchange="checkAgreement()" disabled>
+                <label for="instruct-check" class="checkbox-label" data-t="read_instruct">Я ознакомился с инструкцией</label>
+            </div>
+        </div>
+
+        <p class="warning-desc" data-t="reg_warning_desc">
+            Если аккаунт зарегистрирован не по ссылке ниже или без промокода, <span style="color:var(--pink-1win); font-weight:bold;">ТО БОТ БУДЕТ ВЫДАВАТЬ ОШИБКИ!</span>
+        </p>
+        
+        <!-- КНОПКА ПЕРЕХОДА В ТГ КАНАЛ -->
+        <a href="https://t.me/temki1win" target="_blank" style="display: block; background: #0099ff; color: white; text-align: center; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: 700; border: 1px solid #333; margin-bottom: 5px;">
+            🔗 ПЕРЕЙТИ В КАНАЛ
+        </a>
+        <div style="font-size: 12px; color: #ffffff; text-align: center; margin-bottom: 15px; line-height: 1.4; font-weight: 800; background: rgba(0, 153, 255, 0.15); padding: 12px; border-radius: 10px; border: 1px dashed var(--blue-1win);">
+            В ЭТОМ КАНАЛЕ ПОД НОВЫМ ПОСТОМ БУДЕТ ПОСТИТЬСЯ ССЫЛКА НА 1WIN ДЛЯ РАБОТЫ БОТА
+        </div>
+
+        <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; font-family: monospace; letter-spacing: 2px; color: var(--blue-1win); font-weight: 900; margin-bottom: 15px; border: 1px dashed var(--blue-1win);">
+            Sawz500
+        </div>
+
+        <!-- ЧЕКБОКС 2: Регистрация -->
+        <div class="checkbox-container">
+            <input type="checkbox" id="reg-check" class="custom-checkbox" onchange="checkAgreement()">
+            <label for="reg-check" class="checkbox-label" data-t="reg_confirm">Я зарегистрировался по ссылке и ввел промокод</label>
+        </div>
+
+        <button id="btn-start-confirm" class="modal-btn btn-start-disabled" disabled onclick="closeStartWarning()" data-t="continue">ПРОДОЛЖИТЬ</button>
+    </div>
+</div>
+
+<!-- 2. МОДАЛЬНОЕ ОКНО ДЛЯ СМЕНЫ ID -->
+<div id="confirm-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-title" data-t="change_id_title">СМЕНА ID</div>
+        <p class="modal-desc" data-t="change_id_desc">Вы действительно хотите изменить ID?<br>Текущая сессия будет сброшена.</p>
+        <div class="modal-actions">
+            <button class="modal-btn btn-cancel" onclick="closeModal()" data-t="cancel">ОТМЕНА</button>
+            <button class="modal-btn btn-confirm" onclick="confirmChangeId()" data-t="yes_change">ДА, СМЕНИТЬ</button>
+        </div>
+    </div>
+</div>
+
+<!-- НОВОЕ: ПРЕДУПРЕЖДЕНИЕ О ПРОМОКОДЕ ПЕРЕД ИГРОЙ -->
+<div id="promo-warning-modal" class="modal-overlay">
+    <div class="modal-box" style="border-color: var(--pink-1win);">
+        <div class="warning-big" style="font-size: 20px; margin-bottom: 15px;" data-t="attention">⚠️ ВНИМАНИЕ!</div>
+        <p style="font-size: 14px; font-weight: 700; color: white; margin-bottom: 20px; line-height: 1.5; text-transform: uppercase;">
+            <span data-t="promo_warn_text_1">Если вы не указали промокод</span> 
+            <span style="color: var(--blue-1win); background: rgba(0, 153, 255, 0.1); padding: 2px 5px; border-radius: 4px; cursor: pointer;" onclick="copyPromoText()">Sawz500</span> 
+            <span data-t="promo_warn_text_2">при регистрации, то сигналы будут не правильные!</span>
+        </p>
+        <button class="modal-btn btn-confirm" onclick="confirmPromoAndStart()" data-t="i_entered_promo">Я ВВЕЛ ПРОМОКОД</button>
+    </div>
+</div>
+
+<!-- УНИВЕРСАЛЬНОЕ ВСПЛЫВАЮЩЕЕ УВЕДОМЛЕНИЕ (ТОСТ) -->
+<div id="toast-notification" class="toast">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">Notification</span>
+</div>
+
+<div class="screens-container">
+
+    <!-- 3. ЭКРАН ВВОДА ID -->
+    <div id="screen-start" class="screen">
+        <div style="margin-top: 20px;">
+            <div class="guide-box" style="border-left: 4px solid var(--blue-1win);">
+                <div style="font-size: 14px; font-weight: 800; margin-bottom: 5px;" data-t="enter_id_title">Введите ваш ID</div>
+                <p style="font-size: 12px; color: var(--text-gray);" data-t="enter_id_desc">
+                    Убедитесь, что вы выполнили условия регистрации.
+                </p>
+            </div>
+
+            <div class="id-section">
+                <div class="id-label" data-t="your_id_label">ВАШ ID C 1WIN</div>
+                <input type="tel" id="userIdInput" class="id-input" placeholder="00000000" maxlength="13">
+                <div style="font-size: 10px; color: #666; margin-top: 5px;" data-t="digits_only">Только цифры.</div>
+            </div>
+
+            <button class="main-btn" onclick="completeStart()" data-t="login_btn">ВОЙТИ В СИСТЕМУ</button>
+        </div>
+    </div>
+
+    <!-- 4. МЕНЮ ИГР -->
+    <div id="screen-home" class="screen">
+        <div class="games-grid">
+            <div class="game-card" onclick="openGame('mines')">
+                <img src="https://one-vv02.life/resources/v1/optimizeimages/unsafe/casino_game_card_x1/plain/https://v1.bundlecdn.com/casino-images/v/699e2deb-49eb-4774-949f-7fbbedd55249_vertical.png@avif" alt="Mines">
+                <div class="g-title">MINES</div>
+            </div>
+            <div class="game-card" onclick="openGame('penalty')">
+                <img src="https://one-vv02.life/resources/v1/optimizeimages/unsafe/casino_game_card_x1/plain/https://v1.bundlecdn.com/casino-images/v/461c9008-7685-4e45-84d8-bd0fc59161a6_vertical.png@avif" alt="Penalty">
+                <div class="g-title">PENALTY</div>
+            </div>
+            <div class="game-card" onclick="openGame('coin')">
+                <img src="https://one-vv02.life/resources/v1/optimizeimages/unsafe/casino_game_card_x1/plain/https://v1.bundlecdn.com/casino-images/v/0b5f68bc-dd72-4b8d-976e-538270cdd92b_vertical.png@avif" alt="Coin Flip">
+                <div class="g-title">COIN FLIP</div>
+            </div>
+            <div class="game-card" onclick="openGame('tower')">
+                <img src="https://one-vv02.life/resources/v1/optimizeimages/unsafe/casino_game_card_x1/plain/https://v1.bundlecdn.com/casino-images/infingames/26151502-b2b8-40aa-b6bf-3a2474939113_vertical.png@avif" alt="Tower Rush">
+                <div class="g-title">TOWER RUSH</div>
+            </div>
+        </div>
+        
+        <!-- НОВОЕ ПРЕДУПРЕЖДЕНИЕ -->
+        <div class="home-warning">
+            <span data-t="home_warning_1">ЕСЛИ ВЫ НЕ УКАЗАЛИ ПРОМОКОД</span> 
+            <span class="copy-span" onclick="copyPromoText()">Sawz500</span> 
+            <span data-t="home_warning_2">ПРИ РЕГИСТРАЦИИ, ТО СИГНАЛЫ БУДУТ НЕ ПРАВИЛЬНЫЕ!</span>
+        </div>
+    </div>
+
+    <!-- 5. ПРОФИЛЬ -->
+    <div id="screen-profile" class="screen">
+        <div class="game-ui" style="text-align: center;">
+            <div style="width: 80px; height: 80px; background: var(--blue-1win); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 30px;">👤</div>
+            <h2 id="uName">Player</h2>
+            
+            <div style="font-size: 16px; color: var(--blue-1win); margin-top: 5px; font-family: monospace; background: rgba(0,0,0,0.3); display: inline-flex; align-items: center; padding: 8px 15px; border-radius: 8px; border: 1px solid var(--blue-1win);">
+                ID: <span id="uId" style="margin-right: 10px;">...</span>
+                <button class="change-id-btn" onclick="openModal()" data-t="change_btn">Изменить</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">
+                    <div style="font-size: 24px; font-weight: 900; color: var(--pink-1win);" id="sigCount">0</div>
+                    <div style="font-size: 10px; color: var(--text-gray);" data-t="signals_label">СИГНАЛЫ</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">
+                    <div style="font-size: 24px; font-weight: 900; color: #10b981;" data-t="online_status">Онлайн</div>
+                    <div style="font-size: 10px; color: var(--text-gray);" data-t="status_label">СТАТУС</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. ИНСТРУКЦИЯ -->
+    <div id="screen-instructions" class="screen">
+        <div style="margin-top: 20px;">
+            <div class="guide-box">
+                <div id="full-instruction-text" class="instruction-text-style">
+                    <!-- Text inserted by JS -->
+                </div>
+            </div>
+
+            <div class="guide-box">
+                <p style="font-size: 13px; color: var(--text-gray); line-height: 1.5; font-weight: 600; text-align: center;" data-t="official_link_label">
+                    Официальная ссылка для корректной работы:
+                </p>
+                <a href="https://t.me/temki1win" target="_blank" style="display: block; background: #0099ff; color: white; text-align: center; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: 800; margin-top: 10px; border: 1px solid #333;">
+                    🔗 ПЕРЕЙТИ В КАНАЛ
+                </a>
+                <div style="font-size: 12px; color: #ffffff; text-align: center; margin-top: 10px; line-height: 1.4; font-weight: 800; background: rgba(0, 153, 255, 0.15); padding: 12px; border-radius: 10px; border: 1px dashed var(--blue-1win);">
+                    В ЭТОМ КАНАЛЕ ПОД НОВЫМ ПОСТОМ БУДЕТ ПОСТИТЬСЯ ССЫЛКА НА 1WIN ДЛЯ РАБОТЫ БОТА
+                </div>
+            </div>
+            <div class="guide-box">
+                <p style="font-size: 13px; color: var(--text-gray); text-align: center; font-weight: 600;" data-t="promo_label">Промокод:</p>
+                <div class="code-bg">Sawz500</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. АДМИН ПАНЕЛЬ -->
+    <div id="screen-admin" class="screen">
+        <div style="margin-top: 20px;">
+            <h2 style="text-align: center; margin-bottom: 20px; color: var(--pink-1win); font-style: italic;">ADMIN PANEL</h2>
+            
+            <!-- Статистика -->
+            <div class="guide-box">
+                <h3 style="margin-bottom: 15px; color: var(--blue-1win);">📊 STATS</h3>
+                <div class="admin-stats-grid">
+                    <div class="admin-stat-box">
+                        <div class="admin-stat-value" id="adminTotalSignals">0</div>
+                        <div class="admin-stat-label">Total Signals</div>
+                    </div>
+                    <div class="admin-stat-box">
+                        <div class="admin-stat-value" id="adminActiveUsers">0</div>
+                        <div class="admin-stat-label">Active Users</div>
+                    </div>
+                    <div class="admin-stat-box">
+                        <div class="admin-stat-value" id="adminTodaySignals">0</div>
+                        <div class="admin-stat-label">Today</div>
+                    </div>
+                </div>
+                <button class="export-btn" onclick="exportStatsCSV()">
+                    📥 Export CSV
+                </button>
+            </div>
+
+            <!-- Рассылка -->
+            <div class="guide-box">
+                <h3 style="margin-bottom: 15px; color: var(--blue-1win);">📢 BROADCAST</h3>
+                <textarea id="adminBroadcastMessage" class="admin-textarea" placeholder="Message..."></textarea>
+                <div style="font-size: 11px; color: var(--text-gray); margin-bottom: 10px;">
+                    Max 1 message per 5 min
+                </div>
+                <button class="main-btn" onclick="adminSendBroadcast()">SEND TO ALL</button>
+                <div id="adminBroadcastStatus" style="font-size: 12px; margin-top: 10px; color: var(--text-gray);"></div>
+            </div>
+
+            <!-- Пользователи -->
+            <div class="guide-box">
+                <h3 style="margin-bottom: 15px; color: var(--blue-1win);">👥 USERS</h3>
+                <input type="text" id="adminUserSearch" class="search-input" placeholder="Search ID..." onkeyup="adminSearchUsers()">
+                <div style="overflow-x: auto;">
+                    <table class="admin-users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Sigs</th>
+                                <th>First</th>
+                                <th>Last</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUsersList">
+                            <!-- JS filled -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+             <!-- Изображения игр -->
+            <div class="guide-box">
+                <h3 style="margin-bottom: 15px; color: var(--blue-1win);">🖼️ GAME IMAGES</h3>
+                
+                <div class="admin-image-upload">
+                    <div style="font-weight: bold; margin-bottom: 10px; color: white;">💣 Mines</div>
+                    <div class="admin-image-controls">
+                        <img id="preview-mines" class="admin-image-preview" src="" alt="Prev" style="display: none;">
+                        <input type="file" id="upload-mines" class="admin-file-input" accept="image/png, image/jpeg" onchange="adminUploadImage('mines', this)">
+                        <button class="main-btn" style="padding: 8px 15px; font-size: 12px;" onclick="adminSaveImage('mines')">UPDATE</button>
+                    </div>
+                </div>
+
+                <div class="admin-image-upload">
+                    <div style="font-weight: bold; margin-bottom: 10px; color: white;">⚽ Penalty</div>
+                    <div class="admin-image-controls">
+                        <img id="preview-penalty" class="admin-image-preview" src="" alt="Prev" style="display: none;">
+                        <input type="file" id="upload-penalty" class="admin-file-input" accept="image/png, image/jpeg" onchange="adminUploadImage('penalty', this)">
+                        <button class="main-btn" style="padding: 8px 15px; font-size: 12px;" onclick="adminSaveImage('penalty')">UPDATE</button>
+                    </div>
+                </div>
+
+                <div class="admin-image-upload">
+                    <div style="font-weight: bold; margin-bottom: 10px; color: white;">🪙 Coin</div>
+                    <div class="admin-image-controls">
+                        <img id="preview-coin" class="admin-image-preview" src="" alt="Prev" style="display: none;">
+                        <input type="file" id="upload-coin" class="admin-file-input" accept="image/png, image/jpeg" onchange="adminUploadImage('coin', this)">
+                        <button class="main-btn" style="padding: 8px 15px; font-size: 12px;" onclick="adminSaveImage('coin')">UPDATE</button>
+                    </div>
+                </div>
+
+                <div class="admin-image-upload">
+                    <div style="font-weight: bold; margin-bottom: 10px; color: white;">🏢 Tower</div>
+                    <div class="admin-image-controls">
+                        <img id="preview-tower" class="admin-image-preview" src="" alt="Prev" style="display: none;">
+                        <input type="file" id="upload-tower" class="admin-file-input" accept="image/png, image/jpeg" onchange="adminUploadImage('tower', this)">
+                        <button class="main-btn" style="padding: 8px 15px; font-size: 12px;" onclick="adminSaveImage('tower')">UPDATE</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="main-btn" onclick="goHome()" data-t="back_menu">← MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ИГРА: МИНЫ -->
+    <div id="game-mines" class="screen">
+        <div class="game-ui">
+            <div class="mines-options">
+                <button class="mine-btn" onclick="setMines(1, this)">1</button>
+                <button class="mine-btn active" onclick="setMines(3, this)">3</button>
+                <button class="mine-btn" onclick="setMines(5, this)">5</button>
+                <button class="mine-btn" onclick="setMines(7, this)">7</button>
+            </div>
+            <div class="mines-wrapper" id="minesGrid"></div>
+            <div class="status-text" id="minesStatus" data-t="press_signal">Нажми кнопку для сигнала</div>
+            <div class="loader-container" id="loaderMines"><div class="spinner"></div></div>
+            <button class="main-btn" id="btnMines" onclick="runMines()" data-t="get_signal">ПОЛУЧИТЬ СИГНАЛ</button>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; opacity: 0.5; cursor: pointer;" onclick="goHome()" data-t="back_menu">← В МЕНЮ</div>
+        </div>
+    </div>
+
+    <!-- ИГРА: ПЕНАЛЬТИ -->
+    <div id="game-penalty" class="screen">
+        <div class="game-ui">
+            <div class="penalty-wrapper">
+                <div class="net"></div>
+                <div class="penalty-grid" id="penGrid"></div>
+            </div>
+            <div class="status-text" id="penStatus" data-t="pick_cell">Выбери ячейку для удара</div>
+            <div class="loader-container" id="loaderPen"><div class="spinner"></div></div>
+            <button class="main-btn" id="btnPen" onclick="runPenalty()" data-t="get_signal">ПОЛУЧИТЬ СИГНАЛ</button>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; opacity: 0.5; cursor: pointer;" onclick="goHome()" data-t="back_menu">← В МЕНЮ</div>
+        </div>
+    </div>
+
+    <!-- ИГРА: КОИН ФЛИП -->
+    <div id="game-coin" class="screen">
+        <div class="game-ui">
+            <div class="coin-scene">
+                <div class="coin" id="theCoin">
+                    <div class="side heads"><div class="coin-text">1win</div></div>
+                    <div class="side tails">1</div>
+                </div>
+            </div>
+            <div class="status-text" id="coinStatus" style="font-size: 18px; font-weight: bold; margin-top: 20px;">-</div>
+            <div class="loader-container" id="loaderCoin"><div class="spinner"></div></div>
+            <button class="main-btn" id="btnCoin" onclick="runCoin()" data-t="get_signal">ПОЛУЧИТЬ СИГНАЛ</button>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; opacity: 0.5; cursor: pointer;" onclick="goHome()" data-t="back_menu">← В МЕНЮ</div>
+        </div>
+    </div>
+
+    <!-- ИГРА: TOWER RUSH -->
+    <div id="game-tower" class="screen">
+        <div class="game-ui">
+            <div class="tower-wrapper" id="towerWrap">
+                <div class="tower-result" id="towerNum">0</div>
+                <div class="tower-ground"></div>
+            </div>
+            <div class="status-text" id="towerStatus" data-t="press_tower">Нажми для прогноза этажей</div>
+            <div class="loader-container" id="loaderTower"><div class="spinner"></div></div>
+            <button class="main-btn" id="btnTower" onclick="runTower()" data-t="get_signal">ПОЛУЧИТЬ СИГНАЛ</button>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; opacity: 0.5; cursor: pointer;" onclick="goHome()" data-t="back_menu">← В МЕНЮ</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- НАВИГАЦИЯ -->
+<div class="nav" id="navBar" style="display: none;">
+    <div class="nav-item active" onclick="navTo('screen-home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+        <span data-t="nav_games">Игры</span>
+    </div>
+    <div class="nav-item" onclick="navTo('screen-profile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span data-t="nav_profile">Профиль</span>
+    </div>
+    <div class="nav-item" onclick="navTo('screen-instructions')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <span data-t="nav_instruct">Инструкция</span>
+    </div>
+    <div class="nav-item" id="nav-admin-item" style="display: none;" onclick="navTo('screen-admin')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z"/></svg>
+        <span>Admin</span>
+    </div>
+</div>
+
+<script>
+    // --- DICTIONARY & TRANSLATION SYSTEM ---
+    const TRANSLATIONS = {
+        important: { ru: "⚠️ ВАЖНО!", en: "⚠️ IMPORTANT!" },
+        expand: { ru: "РАЗВЕРНУТЬ ⬇️", en: "EXPAND ⬇️" },
+        collapse: { ru: "СВЕРНУТЬ ⬆️", en: "COLLAPSE ⬆️" },
+        read_instruct: { ru: "Я ознакомился с инструкцией", en: "I have read the instructions" },
+        reg_warning_desc: { ru: "Если аккаунт зарегистрирован не по ссылке ниже или без промокода, <span style='color:var(--pink-1win); font-weight:bold;'>ТО БОТ БУДЕТ ВЫДАВАТЬ ОШИБКИ!</span>", en: "If the account is not registered via the link below or without a promo code, <span style='color:var(--pink-1win); font-weight:bold;'>THE BOT WILL RETURN ERRORS!</span>" },
+        link_1win: { ru: "🔗 КАНАЛ С ССЫЛКОЙ", en: "🔗 CHANNEL WITH LINK" },
+        reg_confirm: { ru: "Я зарегистрировался по ссылке и ввел промокод", en: "I registered via link and entered promo code" },
+        continue: { ru: "ПРОДОЛЖИТЬ", en: "CONTINUE" },
+        
+        change_id_title: { ru: "СМЕНА ID", en: "CHANGE ID" },
+        change_id_desc: { ru: "Вы действительно хотите изменить ID?<br>Текущая сессия будет сброшена.", en: "Do you really want to change ID?<br>Current session will be reset." },
+        cancel: { ru: "ОТМЕНА", en: "CANCEL" },
+        yes_change: { ru: "ДА, СМЕНИТЬ", en: "YES, CHANGE" },
+        
+        attention: { ru: "⚠️ ВНИМАНИЕ!", en: "⚠️ ATTENTION!" },
+        promo_warn_text_1: { ru: "Если вы не указали промокод", en: "If you did not enter promo code" },
+        promo_warn_text_2: { ru: "при регистрации, то сигналы будут не правильные!", en: "during registration, signals will be incorrect!" },
+        i_entered_promo: { ru: "Я ВВЕЛ ПРОМОКОД", en: "I ENTERED PROMO CODE" },
+        
+        enter_id_title: { ru: "Введите ваш ID", en: "Enter your ID" },
+        enter_id_desc: { ru: "Убедитесь, что вы выполнили условия регистрации.", en: "Ensure you met registration conditions." },
+        your_id_label: { ru: "ВАШ ID C 1WIN", en: "YOUR 1WIN ID" },
+        digits_only: { ru: "Только цифры.", en: "Digits only." },
+        login_btn: { ru: "ВОЙТИ В СИСТЕМУ", en: "LOGIN TO SYSTEM" },
+        
+        home_warning_1: { ru: "ЕСЛИ ВЫ НЕ УКАЗАЛИ ПРОМОКОД", en: "IF YOU DID NOT ENTER PROMO CODE" },
+        home_warning_2: { ru: "ПРИ РЕГИСТРАЦИИ, ТО СИГНАЛЫ БУДЕТ НЕ ПРАВИЛЬНЫЕ!", en: "DURING REGISTRATION, SIGNALS WILL BE INCORRECT!" },
+        
+        change_btn: { ru: "Изменить", en: "Change" },
+        signals_label: { ru: "СИГНАЛЫ", en: "SIGNALS" },
+        online_status: { ru: "Онлайн", en: "Online" },
+        status_label: { ru: "СТАТУС", en: "STATUS" },
+        
+        official_link_label: { ru: "Официальная ссылка для корректной работы:", en: "Official link for correct operation:" },
+        promo_label: { ru: "Промокод:", en: "Promo code:" },
+        
+        back_menu: { ru: "← В МЕНЮ", en: "← MENU" },
+        get_signal: { ru: "ПОЛУЧИТЬ СИГНАЛ", en: "GET SIGNAL" },
+        press_signal: { ru: "Нажми кнопку для сигнала", en: "Press button for signal" },
+        pick_cell: { ru: "Выбери ячейку для удара", en: "Pick a cell to shoot" },
+        press_tower: { ru: "Нажми для прогноза этажей", en: "Press for floor forecast" },
+        
+        nav_games: { ru: "Игры", en: "Games" },
+        nav_profile: { ru: "Профиль", en: "Profile" },
+        nav_instruct: { ru: "Инструкция", en: "Help" },
+
+        // Toast & JS Messages
+        promo_copied: { ru: "Промокод скопирован!", en: "Promo code copied!" },
+        error_id: { ru: "Ошибка! Введите корректный ID (только цифры, 5-13 символов).", en: "Error! Enter valid ID (digits only, 5-13 chars)." },
+        access_denied: { ru: "Доступ запрещен", en: "Access denied" },
+        receiving_signal: { ru: "ПОЛУЧЕНИЕ СИГНАЛА...", en: "RECEIVING SIGNAL..." },
+        signal_received: { ru: "Сигнал получен", en: "Signal received" },
+        shoot_here: { ru: "Бей в эту зону", en: "Shoot here" },
+        spinning: { ru: "ВРАЩЕНИЕ...", en: "SPINNING..." },
+        heads_win: { ru: "1WIN (ОРЁЛ)", en: "1WIN (HEADS)" },
+        tails_win: { ru: "РЕШКА", en: "TAILS" },
+        building: { ru: "СТРОИТЕЛЬСТВО...", en: "BUILDING..." },
+        safe_floors: { ru: "Безопасно этажей: ", en: "Safe floors: " },
+
+        // Long text for instructions
+        instruction_html: {
+            ru: `<span class="instruction-header">❗️ ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ ❗️</span>
+                 <p>Бот основан и обучен на кластере нейросети 🖥<br>
+                 Для тренировки бота было сыграно 🎰 10.000+ игр.<br>
+                 В данный момент пользователи бота успешно делают в день 15-25% от своего 💸 капитала!</p><br>
+                 <p>На текущий момент бот по сей день проходит проверки и исправления! Точность бота составляет 92%!</p><br>
+                 <div style="color:var(--blue-1win); font-weight: 800; margin-bottom: 5px;">Для получения максимального профита следуйте инструкции:</div>
+                 <p>🟢 <strong>1. Пройти регистрацию в букмекерской конторе 1WIN</strong><br>
+                 <span style="color:var(--pink-1win)">❗️ОБЯЗАТЕЛЬНО НУЖНО СОЗДАТЬ НОВЫЙ АККАУНТ❗️</span><br>
+                 (Рабочая ссылка на сайт 1WIN находится в телеграмм канале @temki1win)<br>
+                 Если не открывается - заходим с включенным VPN (Швеция).<br>
+                 Без регистрации доступ к сигналам не будет открыт!<br>
+                 <span style="color:var(--pink-1win)">❗️УКАЗАТЬ ПРОМОКОД Sawz500❗️</span></p><br>
+                 <p>🟢 <strong>2. Подключить свой аккаунт к боту</strong>, это можно сделать в Профиле.</p><br>
+                 <p>🟢 <strong>3. Запросить сигнал в боте</strong> и ставить по сигналам из бота.</p>`,
+            en: `<span class="instruction-header">❗️ MUST READ ❗️</span>
+                 <p>The bot is based and trained on a neural network cluster 🖥<br>
+                 Over 🎰 10,000 games were played to train the bot.<br>
+                 Currently, bot users successfully make 15-25% of their 💸 capital daily!</p><br>
+                 <p>The bot is still undergoing checks and fixes! Accuracy is 92%!</p><br>
+                 <div style="color:var(--blue-1win); font-weight: 800; margin-bottom: 5px;">To get maximum profit, follow instructions:</div>
+                 <p>🟢 <strong>1. Register at 1WIN bookmaker</strong><br>
+                 <span style="color:var(--pink-1win)">❗️MUST CREATE A NEW ACCOUNT❗️</span><br>
+                 (The working link to 1WIN is posted in telegram channel @temki1win)<br>
+                 If it doesn't open - use VPN (Sweden).<br>
+                 Access to signals won't open without registration!<br>
+                 <span style="color:var(--pink-1win)">❗️ENTER PROMO CODE Sawz500❗️</span></p><br>
+                 <p>🟢 <strong>2. Connect your account to the bot</strong>, you can do this in Profile.</p><br>
+                 <p>🟢 <strong>3. Request a signal</strong> and bet according to bot signals.</p>`
+        }
+    };
+
+    // --- TELEGRAM INIT & USER ID LOGIC ---
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+        window.Telegram.WebApp.setHeaderColor('#0f192b'); 
+        window.Telegram.WebApp.setBackgroundColor('#0f192b');
+    }
+
+    let tgUserId = 'guest';
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+        tgUserId = window.Telegram.WebApp.initDataUnsafe.user.id;
+    }
+
+    const KEY_VER = `v7_ver_${tgUserId}`;
+    const KEY_ID = `v7_id_${tgUserId}`;
+    const KEY_SIG = `v7_sig_${tgUserId}`;
+    const KEY_LANG = `v7_lang_${tgUserId}`;
+
+    const ADMIN_ID = '343780993';
+    const BOT_TOKEN = '';
+
+    const APP = {
+        verified: localStorage.getItem(KEY_VER) === 'true',
+        id: localStorage.getItem(KEY_ID) || null, 
+        name: (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) 
+              ? window.Telegram.WebApp.initDataUnsafe.user.first_name 
+              : 'Player',
+        signals: parseInt(localStorage.getItem(KEY_SIG) || '0'),
+        currentMines: 3,
+        isAdmin: false,
+        lang: localStorage.getItem(KEY_LANG) || null
+    };
+
+    // --- ADMIN DATA KEYS ---
+    const ADMIN_TOTAL_SIGNALS = 'admin_total_signals';
+    const ADMIN_USERS_LIST = 'admin_users_list';
+    const ADMIN_LAST_MESSAGE = 'admin_last_message';
+    const ADMIN_IMAGES_PREFIX = 'admin_images_';
+    const ADMIN_LAST_BROADCAST = 'admin_last_broadcast';
+
+    // --- INIT ---
+    window.onload = () => {
+        // First check language
+        if (!APP.lang) {
+            document.getElementById('screen-language').style.display = 'flex';
+            document.querySelector('.header').style.display = 'none'; // Hide header during lang selection
+        } else {
+            applyLanguage(APP.lang);
+            startAppFlow();
+        }
+    };
+    
+    function selectLanguage(lang) {
+        APP.lang = lang;
+        localStorage.setItem(KEY_LANG, lang);
+        applyLanguage(lang);
+        
+        // Hide lang screen, show header
+        document.getElementById('screen-language').style.display = 'none';
+        document.querySelector('.header').style.display = 'flex';
+        
+        startAppFlow();
+    }
+    
+    function getText(key) {
+        if (!TRANSLATIONS[key]) return key;
+        return TRANSLATIONS[key][APP.lang] || TRANSLATIONS[key]['ru'];
+    }
+
+    function applyLanguage(lang) {
+        // 1. Text elements with data-t attribute
+        document.querySelectorAll('[data-t]').forEach(el => {
+            const key = el.getAttribute('data-t');
+            if (TRANSLATIONS[key]) {
+                // If it has HTML tags in translation, use innerHTML, else innerText
+                const txt = TRANSLATIONS[key][lang];
+                if (txt.includes('<')) el.innerHTML = txt;
+                else el.innerText = txt;
+            }
+        });
+
+        // 2. Special large HTML blocks
+        const spoilerText = document.getElementById('spoiler-text');
+        const fullInstruct = document.getElementById('full-instruction-text');
+        if (spoilerText) spoilerText.innerHTML = TRANSLATIONS.instruction_html[lang];
+        if (fullInstruct) fullInstruct.innerHTML = TRANSLATIONS.instruction_html[lang];
+    }
+
+    function startAppFlow() {
+        initMinesGrid();
+        initPenaltyGrid();
+        
+        // Check Admin
+        if (APP.id === ADMIN_ID) {
+            APP.isAdmin = true;
+            document.getElementById('nav-admin-item').style.display = 'flex';
+        }
+        
+        if(!APP.verified || !APP.id) {
+            showScreen('screen-start');
+            document.getElementById('start-warning-modal').style.display = 'flex';
+        } else {
+            saveUserToAdminList();
+            updateProfile();
+            showScreen('screen-home');
+            document.getElementById('navBar').style.display = 'flex';
+        }
+        
+        loadGameImages();
+    }
+    
+    // --- ADMIN FUNCTIONS ---
+    function saveUserToAdminList() {
+        let users = JSON.parse(localStorage.getItem(ADMIN_USERS_LIST) || '[]');
+        const now = new Date().toISOString();
+        const today = new Date().toDateString();
+        
+        const existingUserIndex = users.findIndex(u => u.id === APP.id);
+        
+        if (existingUserIndex !== -1) {
+            users[existingUserIndex].lastSeen = now;
+            users[existingUserIndex].signals = APP.signals;
+            users[existingUserIndex].lastActiveDay = today;
+            users[existingUserIndex].isActive = true;
+        } else {
+            users.push({
+                id: APP.id,
+                name: APP.name,
+                signals: APP.signals,
+                firstSeen: now,
+                lastSeen: now,
+                lastActiveDay: today,
+                isActive: true,
+                telegramId: tgUserId !== 'guest' ? tgUserId : null
+            });
+        }
+        localStorage.setItem(ADMIN_USERS_LIST, JSON.stringify(users));
+        updateTotalSignals();
+    }
+    
+    function updateTotalSignals() {
+        let total = parseInt(localStorage.getItem(ADMIN_TOTAL_SIGNALS) || '0');
+        total = Math.max(total, APP.signals); 
+        localStorage.setItem(ADMIN_TOTAL_SIGNALS, total.toString());
+    }
+    
+    function adminLoadStats() {
+        const users = JSON.parse(localStorage.getItem(ADMIN_USERS_LIST) || '[]');
+        const today = new Date().toDateString();
+        const totalSignals = users.reduce((sum, user) => sum + (user.signals || 0), 0);
+        const activeUsers = users.filter(u => u.lastActiveDay === today).length;
+        const todaySignals = users.reduce((sum, user) => {
+            return user.lastActiveDay === today ? sum + (user.signals || 0) : sum;
+        }, 0);
+        
+        document.getElementById('adminTotalSignals').textContent = totalSignals;
+        document.getElementById('adminActiveUsers').textContent = activeUsers;
+        document.getElementById('adminTodaySignals').textContent = todaySignals;
+        adminRenderUsersList(users);
+    }
+    
+    function adminRenderUsersList(users) {
+        const tbody = document.getElementById('adminUsersList');
+        tbody.innerHTML = '';
+        users.forEach(user => {
+            const row = document.createElement('tr');
+            const lastSeenDate = new Date(user.lastSeen);
+            const firstSeenDate = new Date(user.firstSeen);
+            const today = new Date().toDateString();
+            const isActive = user.lastActiveDay === today;
+            
+            row.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.signals || 0}</td>
+                <td>${firstSeenDate.toLocaleDateString()}</td>
+                <td>${lastSeenDate.toLocaleDateString()}</td>
+                <td class="${isActive ? 'user-status-active' : 'user-status-inactive'}">
+                    ${isActive ? 'Active' : 'Inactive'}
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+    
+    function adminSearchUsers() {
+        const searchTerm = document.getElementById('adminUserSearch').value.toLowerCase();
+        const users = JSON.parse(localStorage.getItem(ADMIN_USERS_LIST) || '[]');
+        if (!searchTerm) { adminRenderUsersList(users); return; }
+        const filteredUsers = users.filter(user => 
+            user.id.toLowerCase().includes(searchTerm) || 
+            (user.name && user.name.toLowerCase().includes(searchTerm))
+        );
+        adminRenderUsersList(filteredUsers);
+    }
+    
+    async function adminSendBroadcast() {
+        const message = document.getElementById('adminBroadcastMessage').value.trim();
+        const statusEl = document.getElementById('adminBroadcastStatus');
+        if (!message) { statusEl.textContent = 'Empty message'; statusEl.style.color = '#f53b7b'; return; }
+        
+        const lastBroadcast = localStorage.getItem(ADMIN_LAST_BROADCAST);
+        if (lastBroadcast) {
+            const timeDiff = Date.now() - parseInt(lastBroadcast);
+            if (timeDiff < 5 * 60 * 1000) {
+                statusEl.textContent = `Wait 5 mins`; statusEl.style.color = '#f53b7b'; return;
+            }
+        }
+        
+        const users = JSON.parse(localStorage.getItem(ADMIN_USERS_LIST) || '[]');
+        const telegramUsers = users.filter(u => u.telegramId);
+        
+        if (telegramUsers.length === 0) { statusEl.textContent = 'No TG Users'; statusEl.style.color = '#f53b7b'; return; }
+        
+        statusEl.textContent = 'Sending...'; statusEl.style.color = '#0099ff';
+        let sent = 0; let failed = 0;
+        
+        for (const user of telegramUsers) {
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: user.telegramId, text: `📢 1WIN SIGNALS:\n\n${message}`, parse_mode: 'HTML' })
+                });
+                const result = await response.json();
+                if (result.ok) sent++; else failed++;
+                await new Promise(resolve => setTimeout(resolve, 100));
+            } catch (error) { failed++; }
+        }
+        localStorage.setItem(ADMIN_LAST_BROADCAST, Date.now().toString());
+        localStorage.setItem(ADMIN_LAST_MESSAGE, message);
+        statusEl.textContent = `Sent: ${sent}, Failed: ${failed}`; statusEl.style.color = '#10b981';
+        setTimeout(() => { document.getElementById('adminBroadcastMessage').value = ''; }, 3000);
+    }
+    
+    function adminUploadImage(game, input) {
+        const file = input.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) { alert('Max size 2MB'); input.value = ''; return; }
+        if (!['image/jpeg', 'image/png'].includes(file.type)) { alert('JPG/PNG only'); input.value = ''; return; }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById(`preview-${game}`);
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            sessionStorage.setItem(`temp_image_${game}`, e.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    function adminSaveImage(game) {
+        const imageData = sessionStorage.getItem(`temp_image_${game}`);
+        if (!imageData) { alert('Upload image first'); return; }
+        localStorage.setItem(`${ADMIN_IMAGES_PREFIX}${game}`, imageData);
+        alert(`Saved for ${game}`);
+        updateGameIcons();
+    }
+    
+    function loadGameImages() {
+        ['mines', 'penalty', 'coin', 'tower'].forEach(game => {
+            const imageData = localStorage.getItem(`${ADMIN_IMAGES_PREFIX}${game}`);
+            if (imageData) {
+                const preview = document.getElementById(`preview-${game}`);
+                if (preview) { preview.src = imageData; preview.style.display = 'block'; }
+            }
+        });
+    }
+    function updateGameIcons() { console.log('Icons updated'); }
+    
+    function exportStatsCSV() {
+        const users = JSON.parse(localStorage.getItem(ADMIN_USERS_LIST) || '[]');
+        let csv = 'ID,Name,Signals,First,Last,Status\n';
+        users.forEach(user => {
+            const last = new Date(user.lastSeen).toLocaleDateString();
+            const first = new Date(user.firstSeen).toLocaleDateString();
+            csv += `${user.id},${user.name || ''},${user.signals || 0},"${first}","${last}"\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'stats.csv';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+    
+    // --- SPOILER LOGIC ---
+    let isInstructionExpanded = false;
+    function toggleSpoiler() {
+        const content = document.getElementById('spoiler-text');
+        const btn = document.getElementById('spoiler-btn');
+        const chkContainer = document.getElementById('instruct-check-container');
+        const chk = document.getElementById('instruct-check');
+
+        content.classList.toggle('expanded');
+        if (content.classList.contains('expanded')) {
+            btn.innerText = getText('collapse');
+            isInstructionExpanded = true;
+            chkContainer.classList.remove('disabled');
+            chk.disabled = false;
+        } else {
+            btn.innerText = getText('expand');
+        }
+        checkAgreement();
+    }
+
+    function checkAgreement() {
+        const regChk = document.getElementById('reg-check');
+        const instructChk = document.getElementById('instruct-check');
+        const btn = document.getElementById('btn-start-confirm');
+        
+        if (regChk.checked && instructChk.checked && isInstructionExpanded) {
+            btn.disabled = false;
+            btn.classList.remove('btn-start-disabled');
+            btn.classList.add('btn-start-active');
+        } else {
+            btn.disabled = true;
+            btn.classList.add('btn-start-disabled');
+            btn.classList.remove('btn-start-active');
+        }
+    }
+    
+    function closeStartWarning() { document.getElementById('start-warning-modal').style.display = 'none'; }
+
+    // --- NAVIGATION ---
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        
+        if (id === 'screen-home') document.querySelectorAll('.nav-item')[0].classList.add('active');
+        if (id === 'screen-profile') document.querySelectorAll('.nav-item')[1].classList.add('active');
+        if (id === 'screen-instructions') document.querySelectorAll('.nav-item')[2].classList.add('active');
+        if (id === 'screen-admin') {
+            document.getElementById('nav-admin-item').classList.add('active');
+            adminLoadStats();
+        }
+    }
+    
+    function navTo(page) { 
+        if (page === 'screen-admin' && !APP.isAdmin) { alert(getText('access_denied')); return; }
+        showScreen(page); 
+    }
+    
+    let pendingGameId = null;
+    function openGame(game) { 
+        pendingGameId = game;
+        document.getElementById('promo-warning-modal').style.display = 'flex';
+    }
+
+    function confirmPromoAndStart() {
+        document.getElementById('promo-warning-modal').style.display = 'none';
+        if (pendingGameId) showScreen('game-' + pendingGameId);
+    }
+    
+    function goHome() { showScreen('screen-home'); }
+    
+    // --- AUTH ---
+    function completeStart() {
+        const input = document.getElementById('userIdInput');
+        const val = input.value.trim();
+        const isValid = /^\d{5,13}$/.test(val);
+
+        if (!isValid) {
+            input.classList.add('error');
+            setTimeout(() => input.classList.remove('error'), 500);
+            if(window.Telegram.WebApp && window.Telegram.WebApp.showAlert) {
+                window.Telegram.WebApp.showAlert(getText('error_id'));
+            } else {
+                alert(getText('error_id'));
+            }
+            return;
+        }
+
+        APP.verified = true;
+        APP.id = val;
+        
+        if (APP.id === ADMIN_ID) {
+            APP.isAdmin = true;
+            document.getElementById('nav-admin-item').style.display = 'flex';
+        }
+        
+        localStorage.setItem(KEY_VER, 'true');
+        localStorage.setItem(KEY_ID, APP.id);
+        
+        saveUserToAdminList();
+        updateProfile();
+        document.getElementById('navBar').style.display = 'flex';
+        showScreen('screen-home');
+    }
+
+    function openModal() { document.getElementById('confirm-modal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('confirm-modal').style.display = 'none'; }
+
+    function confirmChangeId() {
+        closeModal();
+        localStorage.removeItem(KEY_VER);
+        localStorage.removeItem(KEY_ID);
+        // We keep Language (KEY_LANG) so they don't have to choose again
+        APP.verified = false;
+        APP.id = null;
+        APP.isAdmin = false;
+        document.getElementById('navBar').style.display = 'none';
+        document.getElementById('nav-admin-item').style.display = 'none';
+        document.getElementById('userIdInput').value = '';
+        
+        document.getElementById('reg-check').checked = false;
+        document.getElementById('instruct-check').checked = false;
+        document.getElementById('instruct-check').disabled = true;
+        document.getElementById('instruct-check-container').classList.add('disabled');
+        isInstructionExpanded = false;
+        document.getElementById('spoiler-text').classList.remove('expanded');
+        document.getElementById('spoiler-btn').innerText = getText('expand');
+        checkAgreement(); 
+        
+        showScreen('screen-start');
+        document.getElementById('start-warning-modal').style.display = 'flex';
+    }
+
+    function updateProfile() {
+        document.getElementById('uName').innerText = APP.name;
+        document.getElementById('uId').innerText = APP.id || '???';
+        document.getElementById('sigCount').innerText = APP.signals;
+    }
+    
+    function addSignal() {
+        APP.signals++;
+        localStorage.setItem(KEY_SIG, APP.signals);
+        saveUserToAdminList();
+        updateProfile();
+    }
+    
+    function getRandomDelay() { return Math.floor(Math.random() * 4000) + 3000; }
+
+    function startLoading(btnId, loaderId, statusId) {
+        document.getElementById(btnId).style.display = 'none';
+        document.getElementById(loaderId).style.display = 'flex';
+        document.getElementById(statusId).innerText = getText('receiving_signal');
+    }
+    function stopLoading(btnId, loaderId, statusId, msg) {
+        document.getElementById(loaderId).style.display = 'none';
+        document.getElementById(btnId).style.display = 'block';
+        document.getElementById(statusId).innerText = msg || getText('signal_received');
+    }
+    
+    function copyPromoText() {
+        const promo = "Sawz500";
+        navigator.clipboard.writeText(promo).then(() => {
+            showToast(getText('promo_copied'));
+        }).catch(err => {
+            showToast(getText('promo_copied'));
+        });
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast-notification');
+        const textEl = document.getElementById('toast-text');
+        textEl.innerText = message;
+        toast.classList.add('show');
+        setTimeout(() => { toast.classList.remove('show'); }, 2000);
+    }
+
+    // --- GAMES ---
+    function setMines(count, btn) {
+        APP.currentMines = count;
+        document.querySelectorAll('.mine-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        resetMinesGrid();
+    }
+    function resetMinesGrid() {
+        document.querySelectorAll('.mine-cell').forEach(c => { c.className = 'mine-cell'; c.innerHTML = ''; });
+    }
+    function initMinesGrid() {
+        const grid = document.getElementById('minesGrid');
+        grid.innerHTML = ''; for(let i=0; i<25; i++) grid.innerHTML += `<div class="mine-cell" id="m-${i}"></div>`;
+    }
+    function runMines() {
+        startLoading('btnMines', 'loaderMines', 'minesStatus');
+        resetMinesGrid();
+        setTimeout(() => {
+            const safeCount = Math.floor(Math.random() * (11 - 3 + 1)) + 3;
+            const safeSpots = new Set();
+            while(safeSpots.size < safeCount) safeSpots.add(Math.floor(Math.random() * 25));
+            const safeSpotsArr = Array.from(safeSpots);
+            let i = 0;
+            const reveal = setInterval(() => {
+                const cell = document.getElementById(`m-${safeSpotsArr[i]}`);
+                cell.classList.add('safe'); cell.innerHTML = '<div class="star-icon">⭐</div>';
+                i++;
+                if(i >= safeSpotsArr.length) { 
+                    clearInterval(reveal); 
+                    stopLoading('btnMines', 'loaderMines', 'minesStatus'); 
+                    addSignal(); 
+                }
+            }, 300);
+        }, getRandomDelay());
+    }
+
+    function initPenaltyGrid() {
+        const grid = document.getElementById('penGrid');
+        grid.innerHTML = ''; for(let i=0; i<15; i++) grid.innerHTML += `<div class="p-cell" id="p-${i}"></div>`;
+    }
+    function runPenalty() {
+        startLoading('btnPen', 'loaderPen', 'penStatus');
+        document.querySelectorAll('.p-cell').forEach(c => c.innerHTML = '');
+        setTimeout(() => {
+            const corners = [0, 4, 10, 14, 2, 12];
+            const target = corners[Math.floor(Math.random() * corners.length)];
+            const cell = document.getElementById(`p-${target}`);
+            cell.innerHTML = '<div class="ball"></div>';
+            stopLoading('btnPen', 'loaderPen', 'penStatus', getText('shoot_here'));
+            addSignal();
+        }, getRandomDelay());
+    }
+
+    let totalRot = 0;
+    function runCoin() {
+        const status = document.getElementById('coinStatus'); const coin = document.getElementById('theCoin');
+        startLoading('btnCoin', 'loaderCoin', 'coinStatus');
+        status.style.color = "white";
+        
+        // Manual override for loader text for coin specific
+        document.getElementById('coinStatus').innerText = getText('spinning');
+        
+        setTimeout(() => {
+            document.getElementById('loaderCoin').style.display = 'none';
+            const isHeads = Math.random() > 0.5;
+            let nextRot = totalRot + 1800; 
+            const remainder = nextRot % 360;
+            if (isHeads) nextRot += (360 - remainder); else nextRot += (180 - remainder) + 360; 
+            totalRot = nextRot;
+            coin.style.transition = 'transform 3s cubic-bezier(0.2, 0.8, 0.2, 1.1)';
+            coin.style.transform = `rotateY(${totalRot}deg)`;
+            setTimeout(() => {
+                document.getElementById('btnCoin').style.display = 'block';
+                addSignal();
+                if(isHeads) { status.innerText = getText('heads_win'); status.style.color = "var(--blue-1win)"; } 
+                else { status.innerText = getText('tails_win'); status.style.color = "#f59e0b"; }
+            }, 3000);
+        }, getRandomDelay());
+    }
+
+    function runTower() {
+        startLoading('btnTower', 'loaderTower', 'towerStatus');
+        const container = document.getElementById('towerWrap');
+        const resultNum = document.getElementById('towerNum');
+        
+        const oldFloors = container.querySelectorAll('.tower-floor, .tower-roof');
+        oldFloors.forEach(f => f.remove());
+        resultNum.style.display = 'none';
+
+        setTimeout(() => {
+            const floorsCount = Math.floor(Math.random() * (20 - 3 + 1)) + 3;
+            document.getElementById('loaderTower').style.display = 'none';
+            document.getElementById('towerStatus').innerText = getText('building');
+            
+            let current = 0;
+            const buildInterval = setInterval(() => {
+                const floor = document.createElement('div');
+                floor.className = 'tower-floor';
+                const styles = ['style-concrete', 'style-brick', 'style-tech'];
+                floor.classList.add(styles[Math.floor(Math.random() * styles.length)]);
+
+                const winDiv = document.createElement('div');
+                winDiv.className = 'windows';
+                for(let k=0; k<4; k++) {
+                    const w = document.createElement('div'); w.className = 'win';
+                    if(Math.random() > 0.3) w.classList.add('lit');
+                    winDiv.appendChild(w);
+                }
+                floor.appendChild(winDiv);
+                container.appendChild(floor);
+                
+                current++;
+                if (current >= floorsCount) {
+                    clearInterval(buildInterval);
+                    const roof = document.createElement('div'); roof.className = 'tower-roof';
+                    container.appendChild(roof);
+                    resultNum.innerText = floorsCount; resultNum.style.display = 'block';
+                    document.getElementById('btnTower').style.display = 'block';
+                    document.getElementById('towerStatus').innerText = getText('safe_floors') + floorsCount;
+                    addSignal();
+                }
+            }, 150);
+        }, getRandomDelay());
+    }
+</script>
+</body>
+</html>
